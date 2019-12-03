@@ -293,8 +293,7 @@ public class RNTrackPlayer: RCTEventEmitter {
         let capabilities = capabilitiesStr?.compactMap { Capability(rawValue: $0) } ?? []
         
         let remoteCommands = capabilities.map { capability in
-            capability.mapToPlayerCommand(jumpIntervalForward: options["jumpIntervalForward"] as? NSNumber,
-                                          jumpIntervalBackward: options["jumpIntervalBackward"] as? NSNumber,
+            capability.mapToPlayerCommand(jumpInterval: options["jumpInterval"] as? NSNumber,
                                           likeOptions: options["likeOptions"] as? [String: Any],
                                           dislikeOptions: options["dislikeOptions"] as? [String: Any],
                                           bookmarkOptions: options["bookmarkOptions"] as? [String: Any])
@@ -345,7 +344,32 @@ public class RNTrackPlayer: RCTEventEmitter {
         
         resolve(NSNull())
     }
+   
     
+    @objc(preload:resolver:rejecter:)
+       public func preload(urlStrings: [String], resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+           for urlString in urlStrings {
+               print("Preloading track:", urlString);
+            player.preload(urlString: urlString);
+                     
+           }
+           
+           
+           resolve(NSNull())
+       }
+
+    @objc(cancelPreload:resolver:rejecter:)
+       public func cancelPreload(urlStrings: [String], resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        for urlString in urlStrings {
+               
+            print("Canceling preloading track:", urlString);
+            player.cancelPreload(urlString: urlString);
+               
+           }
+           
+           resolve(NSNull())
+       }
+
     @objc(remove:resolver:rejecter:)
     public func remove(tracks ids: [String], resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         print("Removing tracks:", ids)
@@ -387,7 +411,7 @@ public class RNTrackPlayer: RCTEventEmitter {
         ])
         
         print("Skipping to track:", trackId)
-        try? player.jumpToItem(atIndex: trackIndex, playWhenReady: player.playerState == .playing)
+        try? player.jumpToItem(atIndex: trackIndex, playWhenReady: true)
         resolve(NSNull())
     }
     
