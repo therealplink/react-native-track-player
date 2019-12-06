@@ -100,10 +100,10 @@ class Track: NSObject, AudioItem, TimePitching, Authorizing {
     
     func getArtwork(_ handler: @escaping (UIImage?) -> Void) {
         if let artworkURL = artworkURL?.value {
-//            print("artwork url ", artworkURL.path, artworkURL.isFileURL)
+            // print("artwork url ", artworkURL.path, artworkURL.isFileURL)
            
             // Handle Local image
-            if(artworkURL.absoluteString.starts(with: "/")){
+            if(artworkURL.path.starts(with: "/")){
                 let image = UIImage.init(contentsOfFile: artworkURL.path);
 //                print("local image ", image);
                 handler(image);
