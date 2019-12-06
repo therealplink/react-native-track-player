@@ -24,40 +24,48 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
         guard let asset = self.preloadedAssets[urlString] as? AVAsset else {
             return
         }
-        print("cancelling preload ", asset);
+//        print("cancelling preload ", asset);
         asset.cancelLoading();
         self.preloadedAssets[urlString] = nil;
         
     }
     
     func preload(urlString: String) {
-        let url =  URL(string: urlString);
-        
-        //        print("preloading ", urlString);
-
-        if let urlUn = url as URL? {
-        if(self.preloadedAssets[urlString] == nil){
+            let url =  URL(string: urlString);
             
-                let asset = AVURLAsset(url:urlUn);
-                let keys = ["playable"];
-                
-                asset.loadValuesAsynchronously(forKeys: keys, completionHandler: {
-                    var _: NSError? = nil
+            //        print("preloading ", urlString);
+            
+            if let urlUn = url as URL? {
+                if(self.preloadedAssets[urlString] == nil){
                     
-                    for key in keys {
-                        let status = asset.statusOfValue(forKey: key, error: nil)
-                        if status == AVKeyValueStatus.failed {
-                            return
-                        }
-//                        print("status man",status.rawValue)
-                    }
+                    let asset = AVURLAsset(url:urlUn);
+                    asset.loadValuesAsynchronously(forKeys: [Constants.assetPlayableKey], completionHandler: nil);
                     
+                    //                let status = asset.statusOfValue(forKey: "playable", error: nil);
+                    
+                    //                    let value = asset.value(forKey: "playable");
+                    //                print("async value ", status.rawValue, status);
                     self.preloadedAssets[urlString] = asset;
                     
-                });
-
-            }
-                    }
+                    
+                }
+                
+                //                asset.loadValuesAsynchronously(forKeys: keys, completionHandler: {
+                //                    var _: NSError? = nil
+                //
+                //                    for key in keys {
+                //                        let status = asset.statusOfValue(forKey: key, error: nil)
+                //                        if status == AVKeyValueStatus.failed {
+                //                            return
+                //                        }
+                ////                        print("status man",status.rawValue)
+                //                    }
+                
+                
+                //                });
+                
+            
+        }
         
     }
     
@@ -67,7 +75,7 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
     }
     
     // MARK: - Properties
-    public var preloadedAssets = [String: AVAsset?]();
+    public var preloadedAssets = [String: AVAsset]();
     var avPlayer: AVPlayer
     let playerObserver: AVPlayerObserver
     let playerTimeObserver: AVPlayerTimeObserver
@@ -223,12 +231,26 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
             options = ["AVURLAssetHTTPHeaderFieldsKey": headers]
         }
         
+//        print("preloaded asset  ", self.preloadedAssets[url.absoluteString], url.absoluteString)
+        
         if(self.preloadedAssets[url.absoluteString] != nil){
-            self._pendingAsset = self.preloadedAssets[url.absoluteString] ?? AVURLAsset(url: url, options: options)
+            let preloadedAsset = self.preloadedAssets[url.absoluteString];
+            let status = preloadedAsset?.statusOfValue(forKey:"playable", error: nil);
+//            print("status before check. ", status?.rawValue)
+                      
+            if(status != .failed){
+//                print("status is not failed.  ", status)
+                self._pendingAsset = self.preloadedAssets[url.absoluteString] ?? AVURLAsset(url: url, options: options)
+                
+                //            print("status of audio asset ", status?.rawValue);
+                self.loadAssetIntoPlayer();
+                return;
+            } else {
+                self._pendingAsset = AVURLAsset(url: url, options: options)
+                
+            }
             
-            //            print("status of audio asset ", status?.rawValue);
-            self.loadAssetIntoPlayer();
-            return
+            
             
         } else {
             // Set item
