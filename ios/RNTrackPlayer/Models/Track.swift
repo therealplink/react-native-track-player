@@ -102,8 +102,9 @@ class Track: NSObject, AudioItem, TimePitching, Authorizing {
         if let artworkURL = artworkURL?.value {
             // print("artwork url ", artworkURL.path, artworkURL.isFileURL)
            
+//            print("artwork url  ", artworkURL.absoluteString);
             // Handle Local image
-            if(artworkURL.path.starts(with: "/")){
+            if(artworkURL.absoluteString.starts(with: "/")){
                 let image = UIImage.init(contentsOfFile: artworkURL.path);
 //                print("local image ", image);
                 handler(image);
