@@ -10,7 +10,7 @@ import Foundation
 import MediaPlayer
 import AVFoundation
 
-class Track: NSObject, AudioItem, TimePitching, Authorizing {
+class Track: NSObject, AudioItem, InitialTiming, TimePitching, Authorizing {
     let id: String
     let url: MediaURL
     
@@ -30,6 +30,8 @@ class Track: NSObject, AudioItem, TimePitching, Authorizing {
     @objc var artwork: MPMediaItemArtwork?
     
     private var originalObject: [String: Any]
+    
+    let initialTime: Double?
     
     init?(dictionary: [String: Any]) {
         guard let id = dictionary["id"] as? String,
@@ -51,6 +53,7 @@ class Track: NSObject, AudioItem, TimePitching, Authorizing {
         self.headers = dictionary["headers"] as? [String: Any]
         self.artworkURL = MediaURL(object: dictionary["artwork"])
         self.pitchAlgorithm = dictionary["pitchAlgorithm"] as? String
+        self.initialTime = dictionary["initialTime"] as? Double
         
         self.originalObject = dictionary
     }
@@ -143,10 +146,17 @@ class Track: NSObject, AudioItem, TimePitching, Authorizing {
         return .lowQualityZeroLatency
     }
     
+    func getInitialTime() -> Double {
+        // print("initial time ", self.initialTime);
+        return self.initialTime ?? 0;
+    }
+    
     // MARK: - Authorizing Protocol
     
     func getHeaders() -> [String : Any] {
         return headers ?? [:]
     }
     
+    override func `self`() -> Self { return self }
+
 }
