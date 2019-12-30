@@ -207,7 +207,7 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
     }
     
     func seek(to seconds: TimeInterval) {
-        avPlayer.seek(to: CMTimeMakeWithSeconds(seconds, preferredTimescale: 1000)) { (finished) in
+        avPlayer.seek(to: CMTimeMakeWithSeconds(seconds, preferredTimescale: 10000), toleranceBefore: .zero, toleranceAfter: .zero) { (finished) in
             if let _ = self._initialTime {
                 self._initialTime = nil
                 if self._playWhenReady {
