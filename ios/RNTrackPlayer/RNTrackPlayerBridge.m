@@ -108,4 +108,8 @@ RCT_EXTERN_METHOD(updateMetadataForTrack:(NSString *)trackId
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(pauseOnTime:(double)time
+                  resolver:(RCTPromiseResolveBlock)resolve
+                rejecter:(RCTPromiseRejectBlock)reject);
+
 @end

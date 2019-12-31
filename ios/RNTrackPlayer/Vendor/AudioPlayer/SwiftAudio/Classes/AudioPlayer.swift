@@ -182,6 +182,9 @@ public class AudioPlayer: AVPlayerWrapperDelegate {
         self.wrapper.cancelPreload(urlString: urlString);
     }
     
+    public func pauseOnTime(time: Double) {
+        self.wrapper.pauseOnTime(time: time);
+    }
     /**
      Toggle playback status.
      */

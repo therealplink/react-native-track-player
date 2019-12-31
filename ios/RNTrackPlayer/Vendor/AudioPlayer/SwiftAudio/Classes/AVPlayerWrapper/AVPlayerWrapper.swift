@@ -19,6 +19,8 @@ public enum PlaybackEndedReason: String {
 }
 
 class AVPlayerWrapper: AVPlayerWrapperProtocol {
+    var pauseOnEndTimeObservor: Any?;
+    
     func cancelPreload(urlString: String) {
         //        print("cancelling preload", urlString);
         guard let asset = self.preloadedAssets[urlString] as? AVAsset else {
@@ -216,6 +218,29 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
             }
             self.delegate?.AVWrapper(seekTo: Int(seconds), didFinish: finished)
         }
+        
+    }
+    
+    func pauseOnTime(time: TimeInterval) {
+        let end = CMTimeMakeWithSeconds(time, preferredTimescale: 10000);
+        let endBoundaryTime: [NSValue] = [end].map({NSValue(time: $0)})
+        
+        self.unregisterPauseOnEndTimeObservor();
+  
+        self.pauseOnEndTimeObservor = avPlayer.addBoundaryTimeObserver(forTimes: endBoundaryTime, queue: nil, using: { [weak self] in
+            self?.avPlayer.pause();
+        })
+    }
+    
+    func unregisterPauseOnEndTimeObservor() {
+        guard let pauseOnEndTimeObservor = pauseOnEndTimeObservor else {
+              return
+          }
+          
+          avPlayer.removeTimeObserver(pauseOnEndTimeObservor)
+          self.pauseOnEndTimeObservor = nil
+          
+          
     }
     
     func load(from url: URL, playWhenReady: Bool, headers: [String: Any]? = nil) {

@@ -57,4 +57,6 @@ protocol AVPlayerWrapperProtocol: class {
     
     func cancelPreload(urlString: String)
     
+    func pauseOnTime(time: TimeInterval)
+    
 }
