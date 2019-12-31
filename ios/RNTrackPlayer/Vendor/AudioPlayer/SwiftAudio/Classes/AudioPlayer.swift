@@ -185,6 +185,11 @@ public class AudioPlayer: AVPlayerWrapperDelegate {
     public func pauseOnTime(time: Double) {
         self.wrapper.pauseOnTime(time: time);
     }
+    
+    public func clearPauseOnTime() {
+        self.wrapper.clearPauseOnTime();
+    }
+    
     /**
      Toggle playback status.
      */

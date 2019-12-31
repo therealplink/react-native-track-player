@@ -225,14 +225,16 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
         let end = CMTimeMakeWithSeconds(time, preferredTimescale: 10000);
         let endBoundaryTime: [NSValue] = [end].map({NSValue(time: $0)})
         
-        self.unregisterPauseOnEndTimeObservor();
+        self.clearPauseOnTime();
   
         self.pauseOnEndTimeObservor = avPlayer.addBoundaryTimeObserver(forTimes: endBoundaryTime, queue: nil, using: { [weak self] in
             self?.avPlayer.pause();
         })
+        
     }
     
-    func unregisterPauseOnEndTimeObservor() {
+    func clearPauseOnTime() {
+        print("clear pause on time ", pauseOnEndTimeObservor);
         guard let pauseOnEndTimeObservor = pauseOnEndTimeObservor else {
               return
           }

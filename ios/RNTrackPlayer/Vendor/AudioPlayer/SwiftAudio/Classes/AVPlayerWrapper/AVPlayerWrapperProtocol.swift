@@ -59,4 +59,6 @@ protocol AVPlayerWrapperProtocol: class {
     
     func pauseOnTime(time: TimeInterval)
     
+    func clearPauseOnTime()
+    
 }

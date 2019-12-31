@@ -500,6 +500,11 @@ public class RNTrackPlayer: RCTEventEmitter {
        resolve(NSNull())
     }
     
+    @objc(clearPauseOnTime)
+    public func clearPauseOnTime() {
+        player.clearPauseOnTime();
+    }
+    
     @objc(setVolume:resolver:rejecter:)
     public func setVolume(level: Float, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         print("Setting volume to \(level)")
