@@ -26,46 +26,46 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
         guard let asset = self.preloadedAssets[urlString] as? AVAsset else {
             return
         }
-//        print("cancelling preload ", asset);
+        //        print("cancelling preload ", asset);
         asset.cancelLoading();
         self.preloadedAssets[urlString] = nil;
         
     }
     
     func preload(urlString: String) {
-            let url =  URL(string: urlString);
+        let url =  URL(string: urlString);
+        
+        //        print("preloading ", urlString);
+        
+        if let urlUn = url as URL? {
+            if(self.preloadedAssets[urlString] == nil){
+                
+                let asset = AVURLAsset(url:urlUn);
+                asset.loadValuesAsynchronously(forKeys: [Constants.assetPlayableKey], completionHandler: nil);
+                
+                //                let status = asset.statusOfValue(forKey: "playable", error: nil);
+                
+                //                    let value = asset.value(forKey: "playable");
+                //                print("async value ", status.rawValue, status);
+                self.preloadedAssets[urlString] = asset;
+                
+                
+            }
             
-            //        print("preloading ", urlString);
+            //                asset.loadValuesAsynchronously(forKeys: keys, completionHandler: {
+            //                    var _: NSError? = nil
+            //
+            //                    for key in keys {
+            //                        let status = asset.statusOfValue(forKey: key, error: nil)
+            //                        if status == AVKeyValueStatus.failed {
+            //                            return
+            //                        }
+            ////                        print("status man",status.rawValue)
+            //                    }
             
-            if let urlUn = url as URL? {
-                if(self.preloadedAssets[urlString] == nil){
-                    
-                    let asset = AVURLAsset(url:urlUn);
-                    asset.loadValuesAsynchronously(forKeys: [Constants.assetPlayableKey], completionHandler: nil);
-                    
-                    //                let status = asset.statusOfValue(forKey: "playable", error: nil);
-                    
-                    //                    let value = asset.value(forKey: "playable");
-                    //                print("async value ", status.rawValue, status);
-                    self.preloadedAssets[urlString] = asset;
-                    
-                    
-                }
-                
-                //                asset.loadValuesAsynchronously(forKeys: keys, completionHandler: {
-                //                    var _: NSError? = nil
-                //
-                //                    for key in keys {
-                //                        let status = asset.statusOfValue(forKey: key, error: nil)
-                //                        if status == AVKeyValueStatus.failed {
-                //                            return
-                //                        }
-                ////                        print("status man",status.rawValue)
-                //                    }
-                
-                
-                //                });
-                
+            
+            //                });
+            
             
         }
         
@@ -98,6 +98,20 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
         }
     }
     
+    deinit {
+        self.playerObserver.stopObserving();
+
+        self.playerItemObserver.stopObservingCurrentItem();
+        self.playerItemNotificationObserver.stopObservingCurrentItem();
+
+        playerTimeObserver.unregisterForPeriodicEvents()
+
+        self.playerObserver.delegate = nil
+        self.playerTimeObserver.delegate = nil
+        self.playerItemNotificationObserver.delegate = nil
+        self.playerItemObserver.delegate = nil
+    }
+
     public init() {
         self.avPlayer = AVPlayer()
         self.playerObserver = AVPlayerObserver()
@@ -226,7 +240,7 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
         let endBoundaryTime: [NSValue] = [end].map({NSValue(time: $0)})
         
         self.clearPauseOnTime();
-  
+        
         self.pauseOnEndTimeObservor = avPlayer.addBoundaryTimeObserver(forTimes: endBoundaryTime, queue: nil, using: { [weak self] in
             self?.avPlayer.pause();
         })
@@ -236,13 +250,13 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
     func clearPauseOnTime() {
         print("clear pause on time ", pauseOnEndTimeObservor);
         guard let pauseOnEndTimeObservor = pauseOnEndTimeObservor else {
-              return
-          }
-          
-          avPlayer.removeTimeObserver(pauseOnEndTimeObservor)
-          self.pauseOnEndTimeObservor = nil
-          
-          
+            return
+        }
+        
+        avPlayer.removeTimeObserver(pauseOnEndTimeObservor)
+        self.pauseOnEndTimeObservor = nil
+        
+        
     }
     
     func load(from url: URL, playWhenReady: Bool, headers: [String: Any]? = nil) {
@@ -258,15 +272,15 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
             options = ["AVURLAssetHTTPHeaderFieldsKey": headers]
         }
         
-//        print("preloaded asset  ", self.preloadedAssets[url.absoluteString], url.absoluteString)
+        //        print("preloaded asset  ", self.preloadedAssets[url.absoluteString], url.absoluteString)
         
         if(self.preloadedAssets[url.absoluteString] != nil){
             let preloadedAsset = self.preloadedAssets[url.absoluteString];
             let status = preloadedAsset?.statusOfValue(forKey:"playable", error: nil);
-//            print("status before check. ", status?.rawValue)
-                      
+            //            print("status before check. ", status?.rawValue)
+            
             if(status != .failed){
-//                print("status is not failed.  ", status)
+                //                print("status is not failed.  ", status)
                 self._pendingAsset = self.preloadedAssets[url.absoluteString] ?? AVURLAsset(url: url, options: options)
                 
                 //            print("status of audio asset ", status?.rawValue);
@@ -297,7 +311,6 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
                         break
                         
                     case .failed:
-                        //                        print("load asset failed")
                         if isPendingAsset {
                             self.delegate?.AVWrapper(failedWithError: error)
                             self._pendingAsset = nil
@@ -305,11 +318,9 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
                         break
                         
                     case .cancelled:
-                        //                        print("load asset cancelled")
                         break
                         
                     default:
-                        //                        print("default me gaya bc");
                         break
                     }
                 }

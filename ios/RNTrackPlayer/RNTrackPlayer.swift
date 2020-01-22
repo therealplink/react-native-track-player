@@ -173,12 +173,6 @@ public class RNTrackPlayer: RCTEventEmitter {
         
         try? AVAudioSession.sharedInstance().setCategory(sessionCategory, mode: sessionCategoryMode, options: sessionCategoryOptions)
         
-        
-        // setup event listeners
-        player.event.secondElapse.addListener(self) { [weak self] state in
-            self?.sendEvent(withName: "second-elapse", body: ["position": state])
-        }
-        
         // setup event listeners
         player.event.stateChange.addListener(self) { [weak self] state in
             self?.sendEvent(withName: "playback-state", body: ["state": state.rawValue])
