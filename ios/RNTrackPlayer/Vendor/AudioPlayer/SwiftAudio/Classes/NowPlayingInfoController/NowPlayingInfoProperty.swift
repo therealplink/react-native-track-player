@@ -209,10 +209,10 @@ public enum NowPlayingInfoProperty: NowPlayingInfoKeyValue {
             return options
             
         case .defaultPlaybackRate(let rate):
-            return rate != nil ? NSNumber(floatLiteral: rate!) : nil
+            return NSNumber(floatLiteral: rate ?? 1)
             
         case .elapsedPlaybackTime(let time):
-            return time != nil ? NSNumber(floatLiteral: time!) : nil
+            return time != nil ? NSNumber(floatLiteral: time ?? 0) : nil
             
         case .externalContentIdentifier(let id):
             return id
@@ -227,7 +227,7 @@ public enum NowPlayingInfoProperty: NowPlayingInfoKeyValue {
             return type != nil ? NSNumber(value: type!.rawValue) : nil
             
         case .playbackProgress(let progress):
-            return progress != nil ? NSNumber(value: progress!) : nil
+            return progress != nil ? NSNumber(value: progress ?? 0) : nil
             
         case .playbackQueueCount(let count):
             return count != nil ? NSNumber(value: count!) : nil
@@ -236,10 +236,10 @@ public enum NowPlayingInfoProperty: NowPlayingInfoKeyValue {
             return index != nil ? NSNumber(value: index!) : nil
             
         case .playbackRate(let rate):
-            return rate != nil ? NSNumber(floatLiteral: rate!) : nil
+            return rate != nil ? NSNumber(floatLiteral: rate ?? 1) : nil
             
         case .serviceIdentifier(let id):
-            return id != nil ? NSString(string: id!) : nil
+            return id != nil ? NSString(string: id ?? "") : nil
             
         }
     }

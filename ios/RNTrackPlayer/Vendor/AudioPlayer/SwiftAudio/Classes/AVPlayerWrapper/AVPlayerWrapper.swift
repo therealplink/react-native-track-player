@@ -105,11 +105,8 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
         self.playerItemNotificationObserver.stopObservingCurrentItem();
 
         playerTimeObserver.unregisterForPeriodicEvents()
-
-        self.playerObserver.delegate = nil
-        self.playerTimeObserver.delegate = nil
-        self.playerItemNotificationObserver.delegate = nil
-        self.playerItemObserver.delegate = nil
+        
+        
     }
 
     public init() {
@@ -270,6 +267,11 @@ class AVPlayerWrapper: AVPlayerWrapperProtocol {
         var options: [String: Any] = [:]
         if let headers = headers {
             options = ["AVURLAssetHTTPHeaderFieldsKey": headers]
+        }
+        
+        if(url.absoluteString.hasPrefix("file:")) {
+            print("requesting precise duration for playback")
+            options[AVURLAssetPreferPreciseDurationAndTimingKey] = true;
         }
         
         //        print("preloaded asset  ", self.preloadedAssets[url.absoluteString], url.absoluteString)
