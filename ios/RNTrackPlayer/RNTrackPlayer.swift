@@ -533,7 +533,9 @@ public class RNTrackPlayer: RCTEventEmitter {
     @objc(setRate:resolver:rejecter:)
     public func setRate(rate: Float, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         print("Setting rate to \(rate)")
-        player.rate = rate
+        DispatchQueue.main.async {
+            self.player.rate = rate
+        }
         resolve(NSNull())
     }
     
