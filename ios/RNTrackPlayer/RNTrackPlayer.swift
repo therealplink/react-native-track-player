@@ -480,7 +480,9 @@ public class RNTrackPlayer: RCTEventEmitter {
     public func play(resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         print("Starting/Resuming playback")
         try? AVAudioSession.sharedInstance().setActive(true)
-        player.play()
+        DispatchQueue.main.async {
+            self.player.play()
+        }
         resolve(NSNull())
     }
     
@@ -531,7 +533,7 @@ public class RNTrackPlayer: RCTEventEmitter {
     }
     
     @objc(setRate:resolver:rejecter:)
-    public func setRate(rate: Float, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+    public func setRate(rate: Float, resolve: RCTPromiseResolveBlock, reject:   RCTPromiseRejectBlock) {
         print("Setting rate to \(rate)")
         DispatchQueue.main.async {
             self.player.rate = rate
