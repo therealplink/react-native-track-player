@@ -7,7 +7,10 @@ import android.support.v4.media.MediaDescriptionCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.RatingCompat;
 import android.support.v4.media.session.MediaSessionCompat.QueueItem;
+import android.util.Log;
+
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.mp3.Mp3Extractor;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.source.dash.DashMediaSource;
@@ -164,6 +167,8 @@ public class Track {
     }
 
     public MediaSource toMediaSource(Context ctx, LocalPlayback playback) {
+        DefaultExtractorsFactory dsExc = new DefaultExtractorsFactory();
+
         // Updates the user agent if not set
         if(userAgent == null || userAgent.isEmpty())
             userAgent = Util.getUserAgent(ctx, "react-native-track-player");
@@ -171,6 +176,8 @@ public class Track {
         DataSource.Factory ds;
 
         if(resourceId != 0) {
+
+//            Log.d("localTest", "Thinking this is local 1" );
 
             try {
                 RawResourceDataSource raw = new RawResourceDataSource(ctx);
@@ -187,11 +194,14 @@ public class Track {
             }
 
         } else if(Utils.isLocal(uri)) {
+//            Log.d("localTest", "Thinking this is local 2" );
 
+            dsExc.setMp3ExtractorFlags(Mp3Extractor.FLAG_ENABLE_INDEX_SEEKING);
             // Creates a local source factory
             ds = new DefaultDataSourceFactory(ctx, userAgent);
 
         } else {
+//            Log.d("localTest", "Thinking this is local 3" );
 
             // Creates a default http source factory, enabling cross protocol redirects
             DefaultHttpDataSourceFactory factory = new DefaultHttpDataSourceFactory(
@@ -217,7 +227,7 @@ public class Track {
             case SMOOTH_STREAMING:
                 return createSsSource(ds);
             default:
-                return new ProgressiveMediaSource.Factory(ds, new DefaultExtractorsFactory()
+                return new ProgressiveMediaSource.Factory(ds,dsExc
                         .setConstantBitrateSeekingEnabled(true))
                         .createMediaSource(uri);
         }
