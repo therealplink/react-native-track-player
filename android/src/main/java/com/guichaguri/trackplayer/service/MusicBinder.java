@@ -3,6 +3,7 @@ package com.guichaguri.trackplayer.service;
 import android.os.Binder;
 import android.os.Bundle;
 import com.facebook.react.bridge.Promise;
+import com.google.android.exoplayer2.PlayerMessage;
 import com.guichaguri.trackplayer.service.player.ExoPlayback;
 
 /**
@@ -12,6 +13,7 @@ public class MusicBinder extends Binder {
 
     private final MusicService service;
     private final MusicManager manager;
+    private PlayerMessage playerMessage;
 
     public MusicBinder(MusicService service, MusicManager manager) {
         this.service = service;
@@ -44,6 +46,27 @@ public class MusicBinder extends Binder {
         manager.setAlwaysPauseOnInterruption(bundle.getBoolean("alwaysPauseOnInterruption", false));
         manager.getMetadata().updateOptions(bundle);
     }
+
+    public void pauseOnTime(long time) {
+       this.clearPauseOnTime();
+
+       this.playerMessage = manager.player.createMessage((messageType, payload)
+                -> {
+            manager.getPlayback().pause();
+       })
+                .setPosition(time)
+                .setPayload("payload 1").setDeleteAfterDelivery(false)
+                .send();
+    }
+
+    public void clearPauseOnTime() {
+        if(this.playerMessage != null){
+            this.playerMessage.cancel();
+            this.playerMessage = null;
+        }
+    }
+
+
 
     public int getRatingType() {
         return manager.getMetadata().getRatingType();

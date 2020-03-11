@@ -16,11 +16,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.util.Log;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
@@ -45,6 +46,7 @@ public class MusicManager implements OnAudioFocusChangeListener {
 
     private MetadataManager metadata;
     private ExoPlayback playback;
+    public ExoPlayer player;
 
     @RequiresApi(26)
     private AudioFocusRequest focus = null;
@@ -131,6 +133,8 @@ public class MusicManager implements OnAudioFocusChangeListener {
 
         player.setAudioAttributes(new com.google.android.exoplayer2.audio.AudioAttributes.Builder()
                 .setContentType(C.CONTENT_TYPE_MUSIC).setUsage(C.USAGE_MEDIA).build());
+
+        this.player = player;
 
         return new LocalPlayback(service, this, player, cacheMaxSize);
     }
