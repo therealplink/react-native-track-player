@@ -64,7 +64,10 @@ dependencies {
     implementation project(':exoplayer-library-core')
 
     implementation project(':exoplayer-library-dash')
-    implementation project(':exoplayer-library-ui')
+
+    implementation project(':exoplayer-library-hls')
+    implementation project(':exoplayer-library-smoothstreaming')
+
 //    def exoPlayerVersion = safeExtGet("exoPlayerVersion", '2.10.1')
 //
 //    // ExoPlayer Core
