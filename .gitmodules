@@ -4,4 +4,4 @@
 	url = https://github.com/therealplink/SwiftAudio
 [submodule "android/ExoPlayer"]
 	path = android/ExoPlayer
-	url = https://github.com/google/ExoPlayer.git
+	url = https://github.com/therealplink/ExoPlayer.git
