@@ -63,10 +63,10 @@ dependencies {
 //
     implementation project(':exoplayer-library-core')
 
-    implementation project(':exoplayer-library-dash')
+    compileOnly project(':exoplayer-library-dash')
 
-    implementation project(':exoplayer-library-hls')
-    implementation project(':exoplayer-library-smoothstreaming')
+    compileOnly project(':exoplayer-library-hls')
+    compileOnly project(':exoplayer-library-smoothstreaming')
 
 //    def exoPlayerVersion = safeExtGet("exoPlayerVersion", '2.10.1')
 //
