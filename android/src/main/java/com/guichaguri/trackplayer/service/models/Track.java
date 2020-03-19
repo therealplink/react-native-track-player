@@ -194,9 +194,11 @@ public class Track {
             }
 
         } else if(Utils.isLocal(uri)) {
-//            Log.d("localTest", "Thinking this is local 2" );
+            if(uri.toString().contains("offline-episodes") == true) {
+                Log.d("localTest", "Thinking this is local 2 "+uri  );
+                dsExc.setMp3ExtractorFlags(Mp3Extractor.FLAG_ENABLE_INDEX_SEEKING);
+            }
 
-            dsExc.setMp3ExtractorFlags(Mp3Extractor.FLAG_ENABLE_INDEX_SEEKING);
             // Creates a local source factory
             ds = new DefaultDataSourceFactory(ctx, userAgent);
 
