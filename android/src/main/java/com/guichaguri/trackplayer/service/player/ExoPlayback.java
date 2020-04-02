@@ -68,7 +68,7 @@ public abstract class ExoPlayback<T extends Player> implements EventListener, Me
 
     public void updateTrack(int index, Track track) {
         int currentIndex = player.getCurrentWindowIndex();
-
+       
         queue.set(index, track);
 
         if(currentIndex == index)
@@ -242,9 +242,10 @@ public abstract class ExoPlayback<T extends Player> implements EventListener, Me
     public void onPositionDiscontinuity(int reason) {
         Log.d(Utils.LOG, "onPositionDiscontinuity: " + reason);
 
+        Track next = getCurrentTrack();
+        Track previous  = null;
         if(lastKnownWindow != player.getCurrentWindowIndex()) {
-            Track previous = lastKnownWindow == C.INDEX_UNSET || lastKnownWindow >= queue.size() ? null : queue.get(lastKnownWindow);
-            Track next = getCurrentTrack();
+            previous = lastKnownWindow == C.INDEX_UNSET || lastKnownWindow >= queue.size() ? null : queue.get(lastKnownWindow);
 
             // Track changed because it ended
             // We'll use its duration instead of the last known position
@@ -254,8 +255,9 @@ public abstract class ExoPlayback<T extends Player> implements EventListener, Me
                 if(duration != C.TIME_UNSET) lastKnownPosition = duration;
             }
 
-            manager.onTrackUpdate(previous, lastKnownPosition, next);
         }
+        manager.onTrackUpdate(previous, lastKnownPosition, next);
+
 
         lastKnownWindow = player.getCurrentWindowIndex();
         lastKnownPosition = player.getCurrentPosition();
